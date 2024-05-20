@@ -19,8 +19,7 @@
   ],
   "dependencies": {
     "@raycast/api": "^1.74.1",
-    "@raycast/utils": "^1.15.0",
-    "react-devtools": "4.28.4"
+    "@raycast/utils": "^1.15.0"
   },
   "devDependencies": {
     "@raycast/eslint-config": "^1.0.6",
@@ -28,7 +27,8 @@
     "@types/react": "18.2.27",
     "eslint": "^8.51.0",
     "prettier": "^3.0.3",
-    "typescript": "^5.2.2"
+    "typescript": "^5.2.2",
+    "react-devtools": "4.28.4"
   },
   "scripts": {
     "build": "ray build -e dist",
