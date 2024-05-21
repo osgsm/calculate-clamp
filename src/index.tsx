@@ -10,26 +10,26 @@ type Values = {
 };
 
 const convertToRem = (value: number) => {
-  return parseFloat((value / 16).toFixed(3));
+  return isNaN(value) ? 0 : parseFloat((value / 16).toFixed(3));
 };
 
 const calculateOutput = (values: Omit<Values, "useTailwind">) => {
   const { minSize, maxSize, minViewport, maxViewport } = values;
 
   const changeRate = (maxSize - minSize) / (maxViewport - minViewport);
-  const vw = Number((changeRate * 100).toFixed(3));
-  const baseSize = Number((maxSize - maxViewport * changeRate).toFixed(3));
+  const vw = Number((isNaN(changeRate) ? 0 : changeRate * 100).toFixed(3));
+  const baseSize = isNaN(changeRate) ? 0 : Number((maxSize - maxViewport * changeRate).toFixed(3));
 
-  const output = `clamp(${convertToRem(minSize)}rem, ${vw}vw + ${convertToRem(baseSize)}rem, ${convertToRem(maxSize)}rem)`;
+  const output = `clamp(${convertToRem(minSize)}rem, ${isFinite(vw) ? vw : 0}vw + ${convertToRem(baseSize)}rem, ${convertToRem(maxSize)}rem)`;
 
   return output;
 };
 
 export default function Command() {
-  const [minSize, setMinSize] = useState(32);
-  const [maxSize, setMaxSize] = useState(48);
-  const [minViewport, setMinViewport] = useState(400);
-  const [maxViewport, setMaxViewport] = useState(1600);
+  const [minSize, setMinSize] = useState(0);
+  const [maxSize, setMaxSize] = useState(0);
+  const [minViewport, setMinViewport] = useState(0);
+  const [maxViewport, setMaxViewport] = useState(0);
   const [useTailwind, setUseTailwind] = useState(false);
 
   const output = calculateOutput({ minSize, maxSize, minViewport, maxViewport });
@@ -49,7 +49,8 @@ export default function Command() {
           </ActionPanel>
         }
       >
-        <Form.Description text={`Result: ${useTailwind ? output.replaceAll(" ", "") : output}`} />
+        <Form.Description title="Result" text={useTailwind ? output.replaceAll(" ", "") : output} />
+        <Form.Separator />
         <Form.TextField
           id="min-size"
           title="Min Size (px) "
