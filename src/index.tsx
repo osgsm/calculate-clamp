@@ -1,5 +1,5 @@
-import { Form, ActionPanel, Action, Clipboard, showHUD, closeMainWindow, LocalStorage } from "@raycast/api";
-import { useEffect, useState } from "react";
+import { Form, ActionPanel, Action, Clipboard, showHUD, closeMainWindow } from "@raycast/api";
+import { useState } from "react";
 
 type Values = {
   minSize: number;
@@ -32,26 +32,10 @@ export default function Command() {
   const [maxViewport, setMaxViewport] = useState(1600);
   const [useTailwind, setUseTailwind] = useState(false);
 
-  useEffect(() => {
-    const loadSavedValues = async () => {
-      const savedMinSize = await LocalStorage.getItem("minSize");
-      console.log({ savedMinSize });
-      setMinSize(Number(savedMinSize));
-    };
-    loadSavedValues();
-  }, []);
-
-  console.log({ minSize });
-
   const output = calculateOutput({ minSize, maxSize, minViewport, maxViewport });
 
   async function handleSubmit() {
     await Clipboard.copy(useTailwind ? output.replaceAll(" ", "") : output);
-    await LocalStorage.setItem("minSize", minSize.toString());
-    await LocalStorage.setItem("maxSize", maxSize.toString());
-    await LocalStorage.setItem("minViewport", minViewport.toString());
-    await LocalStorage.setItem("maxViewport", maxViewport.toString());
-    await LocalStorage.setItem("useTailwind", useTailwind.toString());
     await showHUD("Copied to clipboard");
     await closeMainWindow();
   }
@@ -70,28 +54,28 @@ export default function Command() {
           id="min-size"
           title="Min Size (px) "
           placeholder="Enter minimum size in pixels"
-          value={minSize.toString()}
+          storeValue
           onChange={(value) => setMinSize(Number(value))}
         />
         <Form.TextField
           id="max-size"
           title="Max Size (px) "
           placeholder="Enter maximum size in pixels"
-          value={maxSize.toString()}
+          storeValue
           onChange={(value) => setMaxSize(Number(value))}
         />
         <Form.TextField
           id="min-viewport"
           title="Min Viewport (px) "
-          placeholder="Enter minimum viewport size in pixels"
-          value={minViewport.toString()}
+          placeholder="Enter minimum viewport width in pixels"
+          storeValue
           onChange={(value) => setMinViewport(Number(value))}
         />
         <Form.TextField
           id="max-viewport"
           title="Max Viewport (px) "
-          placeholder="Enter maximum viewport size in pixels"
-          value={maxViewport.toString()}
+          placeholder="Enter maximum viewport width in pixels"
+          storeValue
           onChange={(value) => setMaxViewport(Number(value))}
         />
         <Form.Separator />
@@ -99,7 +83,7 @@ export default function Command() {
           id="use-tailwind"
           title="Use Tailwind CSS"
           label=""
-          value={useTailwind}
+          storeValue
           onChange={(value) => setUseTailwind(value)}
         />
       </Form>
